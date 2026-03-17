@@ -14,6 +14,7 @@ import 'add_medication_screen.dart';
 import 'symptom_entry_screen.dart';
 import 'weekly_chart.dart';
 import 'app_localizations.dart';
+import 'api_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -381,7 +382,7 @@ class HomeScreen extends StatelessWidget {
         context = 'Bugün henüz veri girilmedi.';
       }
 
-      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: 'AIzaSyAP24scEksoAj2GU910f3lfFeMbtT8ahWg');
+      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: APIConfig.geminiKey);
       final isEnglish = AppLocalizations.isEnglish;
       final languagePrompt = isEnglish 
           ? "Please write in English." 

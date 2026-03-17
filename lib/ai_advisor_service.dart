@@ -2,9 +2,10 @@ import 'energy_provider.dart';
 import 'symptom_provider.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'api_config.dart';
 
 class AIAdvisorService {
-  static const String _apiKey = 'AIzaSyAP24scEksoAj2GU910f3lfFeMbtT8ahWg';
+  static const String _apiKey = APIConfig.geminiKey;
   static String _cachedResponse = '';
   static String _lastCacheDate = '';
 

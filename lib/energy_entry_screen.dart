@@ -170,6 +170,5 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
         ),
       ),
     );
-    );
   }
 }

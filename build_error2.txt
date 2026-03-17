@@ -1,0 +1,81 @@
+﻿Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_local_notifications 20.1.0 (21.0.0 available)
+  flutter_local_notifications_linux 7.0.0 (8.0.0 available)
+  flutter_local_notifications_platform_interface 10.0.0 (11.0.0 available)
+  flutter_local_notifications_windows 2.0.1 (3.0.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.19 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  meta 1.16.0 (1.18.1 available)
+  test_api 0.7.6 (0.7.10 available)
+  timezone 0.10.1 (0.11.0 available)
+Got dependencies!
+12 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...                          
+flutter : 
+At line:1 char:65
++ ... s\Android\Android 
+Studio\jbr'; flutter bui
+ld apk --debug 2>&1 | Ou
+t-F ...
++                       
+             ~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo      
+        : NotSpecified  
+  : (:String) [], Rem   
+ oteException
+    + FullyQualifiedErr 
+   orId : NativeComman  
+  dError
+ 
+FAILURE: Build failed wi
+th an exception.
+
+* What went wrong:
+Execution failed for tas
+k ':app:checkDebugAarMet
+adata'.
+> A failure occurred whi
+le executing com.android
+.build.gradle.internal.t
+asks.CheckAarMetadataWor
+kAction
+   > An issue was found 
+when checking AAR metada
+ta:
+
+       1.  Dependency ':
+flutter_local_notificati
+ons' requires core libra
+ry desugaring to be enab
+led
+           for :app.
+
+           See https://d
+eveloper.android.com/stu
+dio/write/java8-support.
+html for more
+           details.
+
+* Try:
+> Run with --stacktrace 
+option to get the stack 
+trace.
+> Run with --info or --d
+ebug option to get more 
+log output.
+> Run with --scan to get
+ full insights.
+> Get more help at https
+://help.gradle.org.
+
+BUILD FAILED in 6s
+Running Gradle task 'assembleDebug'...                              7,1s
+Gradle task assembleDebu
+g failed with exit code 
+1

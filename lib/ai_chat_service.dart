@@ -2,7 +2,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'api_config.dart';
 
 class AIChatService {
-  static const String _apiKey = APIConfig.geminiKey; 
+  static const String _apiKey = geminiApiKey; 
   
   static Future<String> getResponse(String prompt) async {
     if (_apiKey == 'YOUR_GEMINI_API_KEY') {

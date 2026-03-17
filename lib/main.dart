@@ -382,7 +382,7 @@ class HomeScreen extends StatelessWidget {
         context = 'Bugün henüz veri girilmedi.';
       }
 
-      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: APIConfig.geminiKey);
+      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: geminiApiKey);
       final isEnglish = AppLocalizations.isEnglish;
       final languagePrompt = isEnglish 
           ? "Please write in English." 

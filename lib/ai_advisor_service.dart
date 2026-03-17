@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api_config.dart';
 
 class AIAdvisorService {
-  static const String _apiKey = APIConfig.geminiKey;
+  static const String _apiKey = geminiApiKey;
   static String _cachedResponse = '';
   static String _lastCacheDate = '';
 

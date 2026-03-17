@@ -15,6 +15,7 @@ import 'symptom_entry_screen.dart';
 import 'weekly_chart.dart';
 import 'app_localizations.dart';
 import 'api_config.dart';
+import 'chat_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SymptomProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: const MGSupportApp(),
     ),
@@ -737,15 +739,16 @@ class AIChatScreen extends StatefulWidget {
 
 class _AIChatScreenState extends State<AIChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
 
   void _sendMessage() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
+    final chatProvider = context.read<ChatProvider>();
+
     setState(() {
-      _messages.add({'role': 'user', 'text': text});
+      chatProvider.addMessage('user', text);
       _isLoading = true;
       _controller.clear();
     });
@@ -753,19 +756,54 @@ class _AIChatScreenState extends State<AIChatScreen> {
     final response = await AIChatService.getResponse(text);
 
     setState(() {
-      _messages.add({'role': 'bot', 'text': response});
+      chatProvider.addMessage('bot', response);
       _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final chatProvider = context.watch<ChatProvider>();
+    final messages = chatProvider.messages;
+
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.t('ai_support'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22, letterSpacing: 0.5))),
+      appBar: AppBar(
+        title: Text(AppLocalizations.t('ai_support'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22, letterSpacing: 0.5)),
+        actions: [
+          if (messages.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.delete_sweep_outlined),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text(AppLocalizations.isEnglish ? 'Clear History' : 'Geçmişi Temizle'),
+                    content: Text(AppLocalizations.isEnglish 
+                        ? 'Do you want to clear the chat history?' 
+                        : 'Sohbet geçmişini temizlemek istiyor musunuz?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(AppLocalizations.isEnglish ? 'Cancel' : 'İptal'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          chatProvider.clearHistory();
+                          Navigator.pop(context);
+                        },
+                        child: Text(AppLocalizations.isEnglish ? 'Clear' : 'Temizle', style: const TextStyle(color: Colors.red)),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
-            child: _messages.isEmpty
+            child: messages.isEmpty
                 ? Center(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(24.0),
@@ -820,10 +858,10 @@ class _AIChatScreenState extends State<AIChatScreen> {
                   )
                 : ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: _messages.length,
+                    itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final msg = _messages[index];
-                      final isUser = msg['role'] == 'user';
+                      final msg = messages[index];
+                      final isUser = msg.role == 'user';
                       return Align(
                         alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
@@ -846,7 +884,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
                             ],
                           ),
                           child: Text(
-                            msg['text']!,
+                            msg.text,
                             style: TextStyle(
                               color: isUser ? Colors.white : AppTheme.textDark, 
                               fontSize: 16,

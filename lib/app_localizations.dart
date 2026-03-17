@@ -203,7 +203,8 @@ class AppLocalizations {
   }
 
   static Future<void> loadLocale() async {
-    _currentLocale = 'tr';
+    final prefs = await SharedPreferences.getInstance();
+    _currentLocale = prefs.getString('app_language') ?? 'tr';
   }
 
   static Future<void> setLocale(String locale) async {
@@ -224,7 +225,8 @@ class LanguageProvider with ChangeNotifier {
   }
 
   Future<void> _loadLocale() async {
-    _locale = 'tr';
+    final prefs = await SharedPreferences.getInstance();
+    _locale = prefs.getString('app_language') ?? 'tr';
     AppLocalizations._currentLocale = _locale;
     notifyListeners();
   }

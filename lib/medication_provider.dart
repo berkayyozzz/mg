@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'notification_service.dart';
 
 class Medication {
@@ -31,10 +33,32 @@ class Medication {
     final current = takenStatus[key] ?? false;
     takenStatus[key] = !current;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'dosage': dosage,
+      'times': times.map((t) => {'hour': t.hour, 'minute': t.minute}).toList(),
+      'isActive': isActive,
+      'takenStatus': takenStatus,
+    };
+  }
+
+  factory Medication.fromJson(Map<String, dynamic> json) {
+    return Medication(
+      id: json['id'],
+      name: json['name'],
+      dosage: json['dosage'],
+      times: (json['times'] as List).map((t) => TimeOfDay(hour: t['hour'], minute: t['minute'])).toList(),
+      isActive: json['isActive'] ?? true,
+      takenStatus: Map<String, bool>.from(json['takenStatus'] ?? {}),
+    );
+  }
 }
 
 class MedicationProvider with ChangeNotifier {
-  final List<Medication> _medications = [
+  List<Medication> _medications = [
     Medication(
       id: '1',
       name: 'Mestinon (Piridostigmin)',
@@ -49,19 +73,42 @@ class MedicationProvider with ChangeNotifier {
   ];
 
   MedicationProvider() {
-    _scheduleAllNotifications();
+    _loadMedications();
   }
 
   List<Medication> get medications => _medications;
 
+  Future<void> _loadMedications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString('medications');
+    if (data != null) {
+      try {
+        final List<dynamic> decoded = json.decode(data);
+        _medications = decoded.map((m) => Medication.fromJson(m)).toList();
+        notifyListeners();
+      } catch (e) {
+        debugPrint('Error loading medications: $e');
+      }
+    }
+    _scheduleAllNotifications();
+  }
+
+  Future<void> _saveMedications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = json.encode(_medications.map((m) => m.toJson()).toList());
+    await prefs.setString('medications', data);
+  }
+
   void addMedication(Medication med) {
     _medications.add(med);
+    _saveMedications();
     _scheduleAllNotifications();
     notifyListeners();
   }
 
   void removeMedication(String id) {
     _medications.removeWhere((m) => m.id == id);
+    _saveMedications();
     _scheduleAllNotifications();
     notifyListeners();
   }
@@ -70,6 +117,7 @@ class MedicationProvider with ChangeNotifier {
     final medIndex = _medications.indexWhere((m) => m.id == id);
     if (medIndex != -1) {
       _medications[medIndex].toggleTaken(date, time);
+      _saveMedications();
       notifyListeners();
     }
   }

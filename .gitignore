@@ -45,4 +45,10 @@ app.*.map.json
 /android/app/release
 
 # API Config
+lib/api_config.dart
 
+# Android Signing
+android/app/key.properties
+android/app/upload-keystore.jks
+*.jks
+key.properties

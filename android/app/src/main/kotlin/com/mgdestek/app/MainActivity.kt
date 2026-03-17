@@ -1,4 +1,4 @@
-package com.example.mg_destek
+package com.mgdestek.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -21,9 +21,10 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(AppLocalizations.t('energy_entry'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22, letterSpacing: 0.5))),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
@@ -139,7 +140,7 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
                   ),
                 ),
               ],
-              const Spacer(),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
                   final provider = context.read<EnergyProvider>();
@@ -168,6 +169,7 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
           ),
         ),
       ),
+    );
     );
   }
 }

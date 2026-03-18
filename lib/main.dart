@@ -368,9 +368,12 @@ class HomeScreen extends StatelessWidget {
 
   Future<String> _getDailyTip(EnergyLog? energy, SymptomADL? symptom) async {
     try {
+      final dateStr = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+      final scoresHash = 'e${energy?.morningScore ?? 0}_${energy?.noonScore ?? 0}_${energy?.eveningScore ?? 0}_s${symptom?.totalScore ?? 0}';
+      final cacheKey = 'daily_tip_${dateStr}_$scoresHash';
+      
       final prefs = await SharedPreferences.getInstance();
-      final dateKey = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-      final cached = prefs.getString('daily_tip_$dateKey');
+      final cached = prefs.getString(cacheKey);
       if (cached != null && cached.isNotEmpty) return cached;
 
       String context = '';
@@ -413,7 +416,7 @@ Markdown KULLANMA. Sadece düz metin yaz. Kısa tut.
       
       final result = response.text?.trim() ?? defaultTip;
 
-      await prefs.setString('daily_tip_$dateKey', result);
+      await prefs.setString(cacheKey, result);
       return result;
     } catch (e) {
       final errorTip = AppLocalizations.isEnglish

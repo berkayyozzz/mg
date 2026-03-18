@@ -6,26 +6,21 @@ import 'api_config.dart';
 
 class AIAdvisorService {
   static const String _apiKey = geminiApiKey;
-  static String _cachedResponse = '';
-  static String _lastCacheDate = '';
 
   static Future<String> getDailyRecommendation(EnergyLog? today, SymptomADL? todaySymptom) async {
     if (today == null || today.morningScore == null) {
       return "Bugün henüz enerji veya semptom girişi yapmadınız. Akıllı analiz için durumunuzu 'Günlük' veya 'Ana Sayfa' üzerinden güncelleyin.";
     }
 
-    // Use caching so we don't spam the API on every UI rebuild
-    final currentDateStr = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-    final prefs = await SharedPreferences.getInstance();
-    final cached = prefs.getString('ai_advice_$currentDateStr');
+    // Veriye dayalı önbellek anahtarı oluştur (tarih + skorlar)
+    final dateStr = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+    final scoresHash = 'e${today.morningScore}_${today.noonScore}_${today.eveningScore}_s${todaySymptom?.totalScore ?? 0}';
+    final cacheKey = 'ai_advice_${dateStr}_$scoresHash';
     
-    // Simple logic to invalidate cache if scores change significantly could be added here.
-    // For now, if we have a cache for today, return it.
-    if (cached != null && cached.isNotEmpty && _lastCacheDate == currentDateStr) {
-       return cached; // Return from memory
-    } else if (cached != null && cached.isNotEmpty) {
-       _cachedResponse = cached;
-       _lastCacheDate = currentDateStr;
+    final prefs = await SharedPreferences.getInstance();
+    final cached = prefs.getString(cacheKey);
+    
+    if (cached != null && cached.isNotEmpty) {
        return cached;
     }
 
@@ -56,10 +51,8 @@ Markdown KULLANMA. Sadece düz metin olarak kısa bir paragraf döndür.
       
       final result = response.text?.trim() ?? "Verilerinizi inceledim. Lütfen bugün kendinizi çok yormamaya özen gösterin ve ilaçlarınızı zamanında alın.";
       
-      // Save to cache
-      await prefs.setString('ai_advice_$currentDateStr', result);
-      _cachedResponse = result;
-      _lastCacheDate = currentDateStr;
+      // Veriye dayalı anahtarla kaydet
+      await prefs.setString(cacheKey, result);
 
       return result;
 

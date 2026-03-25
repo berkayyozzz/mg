@@ -11,10 +11,10 @@ class AIChatService {
 
     try {
       final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: _apiKey);
-      final content = [Content.text("Sen bir Myastenia Gravis (MG) destek asistanısın. Kullanıcılara nazikçe yardımcı ol ama asla tıbbi teşhis koyma. Her zaman doktorlarına danışmalarını hatırlat. Soru: $prompt")];
+      final content = [Content.text("Sen bir Myastenia Gravis (MG) destek asistanısın. Kullanıcılara nazikçe yardımcı ol ama asla tıbbi teşhis koyma. Her zaman doktorlarına danışmalarını hatırlat. Verdiğin tıbbi veya sağlıkla ilgili her bilginin kaynağını/linkini MUTLAKA cevabının sonuna ekle (örneğin Mayo Clinic, NIH, MGFA vb. linkleri). Soru: $prompt")];
       final response = await model.generateContent(content);
       
-      return "${response.text}\n\n⚠️ NOT: Bu bilgiler genel bilgilendirme amaçlıdır, kesinlikle doktor tavsiyesi yerine geçmez.";
+      return "${response.text}\n\n⚠️ NOT: Bu bilgiler genel bilgilendirme amaçlıdır, yapay zeka tarafından oluşturulmuştur ve kesinlikle doktor tavsiyesi yerine geçmez.";
     } catch (e) {
       return "Bir hata oluştu: $e\n\nLütfen daha sonra tekrar deneyin.";
     }

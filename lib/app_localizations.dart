@@ -81,6 +81,9 @@ class AppLocalizations {
       'ai_error': 'Öneri yüklenirken bir hata oluştu.',
       'tips_loading': 'Tavsiyeler yükleniyor...',
       'type_message': 'Mesajınızı yazın...',
+      'ai_disclaimer': 'Tıbbi Uyarı: Yapay zeka bir doktor değildir. Tüm bilgiler genel bilgilendirme amaçlıdır. Tıbbi kararlar almadan önce daima doktorunuza danışın.',
+      'sources': 'Kaynaklar',
+      'sources_desc': 'Yapay zeka yanıtlarını oluştururken ve uygulamanın genel bilgilendirmesinde temel alınan güvenilir tıbbi kaynaklar:\n\n• Myasthenia Gravis Foundation of America (MGFA)\n  https://myasthenia.org/\n\n• National Institutes of Health (NIH)\n  https://www.nih.gov/\n\n• Dünya Sağlık Örgütü (WHO)\n  https://www.who.int/',
 
       'energy_saved': 'Enerji seviyeniz başarıyla kaydedildi.',
       'select_period': 'Hangi vakit için giriş yapıyorsunuz?',
@@ -175,6 +178,9 @@ class AppLocalizations {
       'ai_error': 'An error occurred loading recommendations.',
       'tips_loading': 'Loading tips...',
       'type_message': 'Type your message...',
+      'ai_disclaimer': 'Medical Disclaimer: AI is not a doctor. This information is for general informational purposes. Always consult your physician before making medical decisions.',
+      'sources': 'Sources & Info',
+      'sources_desc': 'The AI recommendations and app content use the following reliable medical sources for reference:\n\n• Myasthenia Gravis Foundation of America (MGFA)\n  https://myasthenia.org/\n\n• National Institutes of Health (NIH)\n  https://www.nih.gov/\n\n• World Health Organization (WHO)\n  https://www.who.int/',
 
       'energy_saved': 'Energy level saved successfully.',
       'select_period': 'Which period are you logging for?',

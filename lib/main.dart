@@ -773,6 +773,24 @@ class _AIChatScreenState extends State<AIChatScreen> {
       appBar: AppBar(
         title: Text(AppLocalizations.t('ai_support'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 22, letterSpacing: 0.5)),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(AppLocalizations.t('sources')),
+                  content: Text(AppLocalizations.t('sources_desc')),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
           if (messages.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete_sweep_outlined),
@@ -805,6 +823,24 @@ class _AIChatScreenState extends State<AIChatScreen> {
       ),
       body: Column(
         children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: Colors.amber.shade100,
+            width: double.infinity,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.warning_amber_rounded, color: Colors.amber.shade900, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.t('ai_disclaimer'),
+                    style: TextStyle(fontSize: 12, color: Colors.amber.shade900),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: messages.isEmpty
                 ? Center(

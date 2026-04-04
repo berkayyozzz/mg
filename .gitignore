@@ -52,3 +52,11 @@ android/app/key.properties
 android/app/upload-keystore.jks
 *.jks
 key.properties
+
+# Flutter/Dart/Pub related (Extra)
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/podhelper.rb
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/ephemeral/
+/android/local.properties

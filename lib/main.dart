@@ -20,8 +20,13 @@ import 'language_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService.init();
   
+  // Load localizations before starting the app
+  await AppLocalizations.loadLocale();
+  
+  // Non-blocking initialization for heavy services to avoid black screen on launch
+  NotificationService.init().catchError((e) => debugPrint("Notification init error: $e"));
+
   runApp(
     MultiProvider(
       providers: [

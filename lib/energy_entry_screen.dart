@@ -14,7 +14,7 @@ class EnergyEntryScreen extends StatefulWidget {
 class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
   double _currentScore = 5;
   double _sleepQuality = 5;
-  String _selectedPeriod = 'Sabah';
+  String _selectedPeriod = 'Morning';
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
                 const SizedBox(height: 24),
                 SegmentedButton<String>(
                   segments: [
-                    ButtonSegment(value: 'Sabah', label: Text(AppLocalizations.t('morning'))),
-                    ButtonSegment(value: 'Öğle', label: Text(AppLocalizations.t('noon'))),
-                    ButtonSegment(value: 'Akşam', label: Text(AppLocalizations.t('evening'))),
+                    ButtonSegment(value: 'Morning', label: Text(AppLocalizations.t('morning'))),
+                    ButtonSegment(value: 'Noon', label: Text(AppLocalizations.t('noon'))),
+                    ButtonSegment(value: 'Evening', label: Text(AppLocalizations.t('evening'))),
                   ],
                   selected: {_selectedPeriod},
                   onSelectionChanged: (set) {
@@ -93,7 +93,7 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
                     ),
                   ),
                 ),
-                if (_selectedPeriod == 'Sabah') ...[
+                if (_selectedPeriod == 'Morning') ...[
                   const SizedBox(height: 32),
                   Text(
                     AppLocalizations.t('sleep_quality_q'),
@@ -147,9 +147,9 @@ class _EnergyEntryScreenState extends State<EnergyEntryScreen> {
                     final score = _currentScore.toInt();
                     final sleep = _sleepQuality.toInt();
                     
-                    if (_selectedPeriod == 'Sabah') {
+                    if (_selectedPeriod == 'Morning') {
                       provider.updateLog(DateTime.now(), morning: score, sleep: sleep);
-                    } else if (_selectedPeriod == 'Öğle') {
+                    } else if (_selectedPeriod == 'Noon') {
                       provider.updateLog(DateTime.now(), noon: score);
                     } else {
                       provider.updateLog(DateTime.now(), evening: score);

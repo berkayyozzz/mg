@@ -99,6 +99,20 @@ class AppLocalizations {
       'crisis_title': 'MG Kriz Belirtileri',
       'risky_drugs': 'Sakıncalı İlaç Grupları',
       'risky_drugs_desc': 'MG hastaları için riskli olabilecek ilaçlar:',
+      
+      // Language Selection
+      'choose_language': 'Dil Seçin',
+      'selection_desc': 'Uygulamayı hangi dilde kullanmak istersiniz?',
+      'turkish': 'Türkçe',
+      'english': 'English',
+      'continue_button': 'Devam Et',
+
+      // Additional UI
+      'dosage_label': 'Doz',
+      'todays_doses': 'Bugünün Dozları',
+      'score': 'Skor',
+      'med_alert_title': 'MG KRİZ KARTI',
+      'med_alert_desc': 'Tanı: Myastenia Gravis (G70.0)\n\nLÜTFEN DİKKAT: Solunum yetmezliği veya yutma güçlüğü fark ederseniz acilen müdahale gerekebilir. Magnezyum içeren ilaçlardan kaçının.',
     },
     'en': {
       // AppBar titles
@@ -196,6 +210,20 @@ class AppLocalizations {
       'crisis_title': 'MG Crisis Symptoms',
       'risky_drugs': 'Risky Drug Groups',
       'risky_drugs_desc': 'Medications that may be risky for MG patients:',
+
+      // Language Selection
+      'choose_language': 'Choose Language',
+      'selection_desc': 'In which language would you like to use the app?',
+      'turkish': 'Turkish',
+      'english': 'English',
+      'continue_button': 'Continue',
+
+      // Additional UI
+      'dosage_label': 'Dosage',
+      'todays_doses': "Today's Doses",
+      'score': 'Score',
+      'med_alert_title': 'MG CRISIS CARD',
+      'med_alert_desc': 'Diagnosis: Myasthenia Gravis (G70.0)\n\nATTENTION: If you notice respiratory failure or difficulty swallowing, urgent intervention may be needed. Avoid medications containing magnesium.',
     },
   };
 
@@ -217,14 +245,17 @@ class AppLocalizations {
     _currentLocale = locale;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('app_language', locale);
+    await prefs.setBool('language_set', true);
   }
 }
 
 class LanguageProvider with ChangeNotifier {
   String _locale = 'tr';
+  bool _isLanguageSet = false;
 
   String get locale => _locale;
   bool get isEnglish => _locale == 'en';
+  bool get isLanguageSet => _isLanguageSet;
 
   LanguageProvider() {
     _loadLocale();
@@ -233,12 +264,21 @@ class LanguageProvider with ChangeNotifier {
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
     _locale = prefs.getString('app_language') ?? 'tr';
+    _isLanguageSet = prefs.getBool('language_set') ?? false;
     AppLocalizations._currentLocale = _locale;
+    notifyListeners();
+  }
+
+  Future<void> setLanguage(String locale) async {
+    _locale = locale;
+    _isLanguageSet = true;
+    await AppLocalizations.setLocale(locale);
     notifyListeners();
   }
 
   Future<void> toggleLanguage() async {
     _locale = _locale == 'tr' ? 'en' : 'tr';
+    _isLanguageSet = true;
     await AppLocalizations.setLocale(_locale);
     notifyListeners();
   }

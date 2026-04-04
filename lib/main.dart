@@ -16,6 +16,7 @@ import 'weekly_chart.dart';
 import 'app_localizations.dart';
 import 'api_config.dart';
 import 'chat_provider.dart';
+import 'language_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +51,9 @@ class MGSupportApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: themeProvider.themeMode,
           locale: Locale(languageProvider.locale),
-          home: const MainNavigationScreen(),
+          home: languageProvider.isLanguageSet 
+              ? const MainNavigationScreen() 
+              : const LanguageSelectionScreen(),
         );
       },
     );
@@ -131,7 +134,13 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         elevation: 0,
-
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.translate),
+            onPressed: () => context.read<LanguageProvider>().toggleLanguage(),
+            tooltip: AppLocalizations.t('change_language'),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -443,10 +452,10 @@ Markdown KULLANMA. Sadece düz metin yaz. Kısa tut.
           ),
           child: const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 32),
         ),
-        title: const Text('Acil Durum Bilgileri', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18)),
-        subtitle: const Padding(
-          padding: EdgeInsets.only(top: 8.0),
-          child: Text('Kriz anında yapılması gerekenler ve riskli ilaçlar.'),
+        title: Text(AppLocalizations.t('emergency_info'), style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18)),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(AppLocalizations.t('emergency_desc')),
         ),
         trailing: const Icon(Icons.arrow_forward_ios, color: Colors.red, size: 20),
         onTap: () {
@@ -512,10 +521,22 @@ class EmergencyScreen extends StatelessWidget {
           Text(AppLocalizations.t('risky_drugs'), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red)),
           Text(AppLocalizations.t('risky_drugs_desc'), style: const TextStyle(fontSize: 16)),
           const SizedBox(height: 12),
-          _buildDrugWarningItem('Bazı Antibiyotikler', 'Aminoglikozidler, Kinolonlar (Cipro vb.), Makrolidler.'),
-          _buildDrugWarningItem('Magnezyum', 'Mevcut zayıflığı artırabilir.'),
-          _buildDrugWarningItem('Bazı Kalp İlaçları', 'Beta-blokerler, Kalsiyum kanal blokerleri.'),
-          _buildDrugWarningItem('Kas Gevşeticiler', 'Özellikle ameliyat öncesi kullanılanlar.'),
+          _buildDrugWarningItem(
+            AppLocalizations.isEnglish ? 'Some Antibiotics' : 'Bazı Antibiyotikler', 
+            AppLocalizations.isEnglish ? 'Aminoglycosides, Quinolones (Cipro etc.), Macrolides.' : 'Aminoglikozidler, Kinolonlar (Cipro vb.), Makrolidler.'
+          ),
+          _buildDrugWarningItem(
+            AppLocalizations.isEnglish ? 'Magnesium' : 'Magnezyum', 
+            AppLocalizations.isEnglish ? 'Can increase existing weakness.' : 'Mevcut zayıflığı artırabilir.'
+          ),
+          _buildDrugWarningItem(
+            AppLocalizations.isEnglish ? 'Some Heart Medications' : 'Bazı Kalp İlaçları', 
+            AppLocalizations.isEnglish ? 'Beta-blockers, Calcium channel blockers.' : 'Beta-blokerler, Kalsiyum kanal blokerleri.'
+          ),
+          _buildDrugWarningItem(
+            AppLocalizations.isEnglish ? 'Muscle Relaxants' : 'Kas Gevşeticiler', 
+            AppLocalizations.isEnglish ? 'Especially those used before surgery.' : 'Özellikle ameliyat öncesi kullanılanlar.'
+          ),
         ],
       ),
     );
@@ -533,15 +554,15 @@ class EmergencyScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.medical_services, color: Colors.white, size: 32),
-              SizedBox(width: 12),
-              Text('MG KRİZ KARTI', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+              const Icon(Icons.medical_services, color: Colors.white, size: 32),
+              const SizedBox(width: 12),
+              Text(AppLocalizations.t('med_alert_title'), style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Tanı: Myastenia Gravis (G70.0)\n\nLÜTFEN DİKKAT: Solunum yetmezliği veya yutma güçlüğü fark ederseniz acilen müdahale gerekebilir. Magnezyum içeren ilaçlardan kaçının.',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            AppLocalizations.t('med_alert_desc'),
+            style: const TextStyle(color: Colors.white, fontSize: 18),
           ),
         ],
       ),
@@ -593,9 +614,9 @@ class MedicationScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Text('${AppLocalizations.isEnglish ? "Dosage" : "Doz"}: ${med.dosage}', style: const TextStyle(fontSize: 18)),
+                        Text('${AppLocalizations.t('dosage_label')}: ${med.dosage}', style: const TextStyle(fontSize: 18)),
                         const SizedBox(height: 12),
-                        Text(AppLocalizations.t('reminder_times') + (AppLocalizations.isEnglish ? " (Today's Doses):" : " (Bugünün Dozları):"), style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(AppLocalizations.t('todays_doses'), style: const TextStyle(fontWeight: FontWeight.bold)),
                         Wrap(
                           spacing: 8,
                           children: med.times.map((time) {
@@ -654,7 +675,7 @@ class SymptomLogScreen extends StatelessWidget {
                 final log = symptomProvider.history[index];
                 return Card(
                   child: ExpansionTile(
-                    title: Text('${AppLocalizations.isEnglish ? "Score" : "Skor"}: ${log.totalScore} / 15', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text('${AppLocalizations.t('score')}: ${log.totalScore} / 15', style: const TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Text('${log.date.day}/${log.date.month}/${log.date.year} ${log.date.hour.toString().padLeft(2, '0')}:${log.date.minute.toString().padLeft(2, '0')}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

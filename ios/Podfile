@@ -7,16 +7,25 @@ ENV['COCOAPODS_DISABLE_STATS'] = '1'
 
 
 def flutter_root
+  # Try environment variable first (standard for CI/CD like Codemagic/Appcircle)
+  return ENV['FLUTTER_ROOT'] if ENV.key?('FLUTTER_ROOT')
+
   generated_xcode_build_settings_path = File.expand_path(File.join('Flutter', 'Generated.xcconfig'), File.dirname(__FILE__))
   unless File.exist?(generated_xcode_build_settings_path)
-    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get has been executed."
+    # If the file is missing and we don't have an environment variable, try to find it via the flutter command
+    # This is a last resort fallback
+    begin
+      return `flutter info --path`.strip
+    rescue
+      raise "#{generated_xcode_build_settings_path} must exist or FLUTTER_ROOT env var must be set."
+    end
   end
 
   File.foreach(generated_xcode_build_settings_path) do |line|
     matches = line.match(/\AFLUTTER_ROOT=(.*)\z/)
     return matches[1] if matches
   end
-  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig and rerunning flutter pub get."
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try rerunning flutter pub get."
 end
 
 require File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper.rb')

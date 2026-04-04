@@ -549,7 +549,7 @@ class EmergencyScreen extends StatelessWidget {
         color: Colors.red,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(

@@ -4,7 +4,6 @@ platform :ios, '13.0'
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = '1'
 
-project 'Runner'
 
 
 def flutter_root
@@ -20,7 +19,7 @@ def flutter_root
   raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig and rerunning flutter pub get."
 end
 
-require File.expand_path(File.join('Flutter', 'podhelper.rb'), File.dirname(__FILE__))
+require File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper.rb')
 
 target 'Runner' do
   use_frameworks! :linkage => :static
